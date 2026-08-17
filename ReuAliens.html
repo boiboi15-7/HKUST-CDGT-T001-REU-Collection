@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Web3 Connect Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f4f6f8;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    button {
+      background-color: #f6851b;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover { background-color: #e2761b; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    .status { margin-top: 1rem; font-size: 0.9rem; color: #555; word-break: break-all; }
+    .error { color: #d9534f; }
+  </style>
+  
+  <!-- Load Ethers.js v6 via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="card">
+    <h2>MetaMask Web3 Connect</h2>
+    <button id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+    <div id="status" class="status">Status: Disconnected</div>
+  </div>
+
+  <script>
+    const connectBtn = document.getElementById('connectBtn');
+    const statusDiv = document.getElementById('status');
+
+    let provider;
+    let signer;
+
+    // Helper: Wait for MetaMask injection (fixes GitHub Pages async timing)
+    function getEthereumProvider() {
+      return new Promise((resolve) => {
+        if (window.ethereum) {
+          resolve(window.ethereum);
+        } else {
+          // Listen for MetaMask initialization event if loaded asynchronously
+          window.addEventListener('ethereum#initialized', () => {
+            resolve(window.ethereum);
+          }, { once: true });
+
+          // Fallback timeout after 2 seconds
+          setTimeout(() => {
+            resolve(window.ethereum || null);
+          }, 2000);
+        }
+      });
+    }
+
+    async function connectWallet() {
+      // Security Check for direct local files
+      if (window.location.protocol === 'file:') {
+        statusDiv.innerHTML = '<span class="error">MetaMask will not work on file:// URLs. Please run a local web server or upload to GitHub Pages.</span>';
+        return;
+      }
+
+      const ethereum = await getEthereumProvider();
+
+      if (!ethereum) {
+        statusDiv.innerHTML = '<span class="error">MetaMask is not installed. <a href="https://metamask.io/download/" target="_blank">Install here</a></span>';
+        return;
+      }
+
+      try {
+        connectBtn.disabled = true;
+        statusDiv.innerText = "Connecting...";
+
+        // Request connection to accounts
+        const browserProvider = new ethers.BrowserProvider(ethereum);
+        signer = await browserProvider.getSigner();
+        const address = await signer.getAddress();
+
+        // Update UI
+        statusDiv.innerText = `Connected: ${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+        connectBtn.innerText = "Wallet Connected";
+
+        // Register event handlers
+        setupEventListeners(ethereum);
+
+      } catch (error) {
+        connectBtn.disabled = false;
+        connectBtn.innerText = "Connect Wallet";
+        
+        if (error.code === 4001) {
+          statusDiv.innerText = "Status: Connection rejected by user.";
+        } else {
+          statusDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+        }
+      }
+    }
+
+    function setupEventListeners(ethereum) {
+      // Account changed by user in MetaMask
+      ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) {
+          statusDiv.innerText = "Status: Wallet Disconnected";
+          connectBtn.innerText = "Connect Wallet";
+          connectBtn.disabled = false;
+        } else {
+          window.location.reload();
+        }
+      });
+
+      // Chain/Network changed
+      ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
