@@ -1,0 +1,56 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.34;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ReuNFT is ERC721, Ownable {
+    string private s_baseTokenURI;
+    uint256 private s_tokenCounter;
+
+    mapping(uint256 => uint256) public s_randomWords;
+
+    event NFTMinted(uint256 indexed tokenId, uint256 randomNumber);
+
+    constructor(string memory baseURI) 
+        ERC721("Reu Collection", "REU") 
+        Ownable(msg.sender)
+    {
+        s_baseTokenURI = baseURI;
+    }
+
+    /// @notice Mints an NFT instantly in a single transaction with pseudo-randomness
+    function requestNFT() public onlyOwner returns (uint256 tokenId) {
+        tokenId = s_tokenCounter;
+        s_tokenCounter++;
+
+        // On-chain pseudo-random number generator
+        uint256 randomNumber = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp,
+                    block.prevrandao,
+                    msg.sender,
+                    tokenId
+                )
+            )
+        );
+
+        s_randomWords[tokenId] = randomNumber;
+        _safeMint(owner(), tokenId);
+
+        emit NFTMinted(tokenId, randomNumber);
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return s_baseTokenURI;
+    }
+
+    function setBaseURI(string memory newBaseURI) external onlyOwner {
+        s_baseTokenURI = newBaseURI;
+    }
+
+    function totalSupply() external view returns (uint256) {
+        return s_tokenCounter;
+    }
+}
