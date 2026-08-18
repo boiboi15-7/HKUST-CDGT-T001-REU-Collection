@@ -1,47 +1,68 @@
-# HKUST-CDGT-T001-REU-Collection
-The repository for the REU NFT collection created by messigoat10 on the Sepolia testnet
+# REU Alien NFT Collection
 
-# Reu NFT Collection
-
-An ERC-721 NFT smart contract deployed on the Ethereum Sepolia Testnet featuring IPFS metadata integration and pseudo-random attribute generation.
+A single-page Web3 decentralized application (dApp) for minting **REU Alien NFTs** on the Ethereum network using MetaMask and IPFS.
 
 ---
 
-## 🚀Contract Overview
+## Project Details
 
-- **Network:** Ethereum Sepolia Testnet
-- **Contract Address:** `0x3F624c103e523A475ddb15f4dF616F263F3407e5`
-- **Token Standard:** ERC-721 (OpenZeppelin)
-- **Solidity Version:** `0.8.34`
-- **Metadata Storage:** IPFS (via Pinata)
-
----
-
-## ✨ Features
-
-- **ERC-721 Compliant:** Built on battle-tested OpenZeppelin standards for secure token minting and ownership tracking.
-- **Decentralized Storage:** Artwork and JSON metadata hosted on IPFS via Pinata to ensure data permanence.
-- **On-Chain Pseudo-Randomness:** Generates unique token characteristics on-chain during the minting transaction.
+* **Token Contract Address:** [`0xb8eF45d272D357Ff694dE43E5Fa1c5D763B72d7C`](https://sepolia.etherscan.io/address/0xb8eF45d272D357Ff694dE43E5Fa1c5D763B72d7C)
+* **Contract Deployer / Wallet:** `0x18788A7b49FB126B11102C61988b1068BDaFcA7f`
+* **Metadata IPFS CID:** `bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze`
+* **IPFS Gateway Link:** [ipfs://bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze](https://ipfs.io/ipfs/bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze)
 
 ---
 
-## 🛠️ How to Deploy & Interact in Remix
+## Development & Creation Process
 
-### 1. Deployment
-1. Open [Remix IDE](https://remix.ethereum.org/).
-2. Load `ReuNFT.sol` into your workspace.
-3. Select Solidity Compiler version `0.8.34` and compile.
-4. Under **Deploy & Run Transactions**, select **Injected Provider - MetaMask**.
-5. Input your IPFS Base URI (`ipfs://bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze/`) as the constructor argument and click **Transact**.
+### Step 1: Pinata IPFS Asset Upload
+1. Uploaded the original NFT artwork file (`alien.png`) to **Pinata.cloud**.
+2. Generated the initial Image IPFS CID.
 
-### 2. Minting Tokens
-- Execute `requestNFT()` under **Deployed Contracts** in Remix to mint a token (Token ID `0`).
-- Check token supply using `totalSupply()`.
-- Retrieve random assignment details via `s_randomWords(0)`.
+### Step 2: Metadata JSON Construction
+1. Created a local file named `metadata.json` referencing the uploaded image CID:
+   ```json
+   {
+     "name": "REU Alien #1",
+     "description": "Official REU Alien NFT Collection",
+     "image": "ipfs://YOUR_IMAGE_CID_HERE",
+     "attributes": [
+       {
+         "trait_type": "Species",
+         "value": "Alien"
+       },
+       {
+         "trait_type": "Collection",
+         "value": "REU"
+       }
+     ]
+   }
+
+   # REU Alien NFT Collection
+
+A lightweight, single-page Web3 decentralized application (dApp) for minting **REU Alien NFTs** on the Ethereum network using MetaMask and IPFS.
 
 ---
 
-## 🔗 Verification Links
+## 🚀 How to Mint
 
-- **Sepolia Etherscan:** `https://sepolia.etherscan.io/address/0x3F624c103e523A475ddb15f4dF616F263F3407e5`
-- **IPFS Base Metadata:** `ipfs://bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze/0`
+1. Open the live site hosted via **GitHub Pages**.
+2. Click **Connect MetaMask** and approve the connection popup.
+3. Paste your Pinata CID (or use the default CID provided above).
+4. Click **Mint REU NFT** and confirm the transaction in MetaMask.
+
+---
+
+## 🛠️ Built With
+
+* **HTML5 / CSS3** (Vanilla Glassmorphism UI)
+* **JavaScript (ES6+)**
+* **Ethers.js v5** (Web3 Provider & Contract Interactions)
+* **IPFS / Pinata** (Decentralized Asset & Metadata Storage)
+* **GitHub Pages** (Free Static Hosting)
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
