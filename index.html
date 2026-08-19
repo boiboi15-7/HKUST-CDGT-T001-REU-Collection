@@ -3,301 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REU Alien NFT | Mint Page</title>
-  <!-- Ethers.js v5 via CDN -->
+  <title>REU Alien NFT Collection</title>
+  <!-- Load Ethers.js v5 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    
     body {
-      background: #090d16;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(88, 166, 255, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(35, 134, 54, 0.12) 0px, transparent 50%);
-      color: #f0f6fc;
-      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: #ffffff;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 24px;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
     }
-
     .card {
-      background: rgba(22, 27, 34, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 32px;
+      border-radius: 16px;
+      padding: 30px;
       width: 100%;
       max-width: 420px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(88, 166, 255, 0.1);
-      color: #58a6ff;
-      border: 1px solid rgba(88, 166, 255, 0.25);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 16px;
+    h1 { margin-top: 0; font-size: 1.8rem; }
+    p { color: #cbd5e1; font-size: 0.95rem; }
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      font-size: 0.9rem;
     }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      background-color: #58a6ff;
-      border-radius: 50%;
-    }
-
-    h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-    p.subtitle { font-size: 14px; color: #8b949e; margin-bottom: 24px; }
-
-    .stats-container {
-      background: #0d1117;
-      border: 1px solid #21262d;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .stats-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: #8b949e;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .counter-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: #58a6ff;
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    .input-group label {
-      display: block;
-      font-size: 12px;
-      color: #8b949e;
-      font-weight: 600;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-
-    .input-box {
-      width: 100%;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: #ffffff;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .input-box:focus { border-color: #58a6ff; }
-
-    .wallet-chip {
-      display: none;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid #30363d;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      color: #8b949e;
-      margin-bottom: 20px;
-      word-break: break-all;
-    }
-
-    .btn {
-      background: #238636;
-      color: #ffffff;
+    button {
+      width: 95%;
+      padding: 12px;
+      margin-top: 10px;
       border: none;
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 12px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      color: white;
+      font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+      transition: opacity 0.2s;
     }
-
-    .btn:hover { background: #2ea043; }
-    .btn:disabled { background: #21262d; color: #484f58; box-shadow: none; cursor: not-allowed; }
-
-    .status-msg {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #8b949e;
-      line-height: 1.5;
-      word-break: break-all;
-    }
+    button:hover { opacity: 0.9; }
+    button:disabled { background: #64748b; cursor: not-allowed; }
+    .status { margin-top: 15px; font-size: 0.85rem; word-break: break-word; }
+    .error { color: #f87171; }
+    .success { color: #4ade80; }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <div class="badge">
-      <span class="badge-dot"></span> Sepolia Testnet
+    <h1>REU Alien NFT Mint</h1>
+    <p>Mint your REU Alien NFT directly on Sepolia testnet.</p>
+    
+    <div>
+      <p id="supplyText">Total Minted: --</p>
     </div>
 
-    <h1>REU Alien NFT</h1>
-    <p class="subtitle">Official Collection Mint Page</p>
+    <button id="connectBtn" onclick="connectWallet()">Connect MetaMask</button>
+    <p id="walletAddress" style="font-size: 0.8rem; color: #a855f7;"></p>
 
-    <div class="stats-container">
-      <div class="stats-header">
-        <span>Total Supply</span>
-        <span id="totalSupply" class="counter-value">- / 10</span>
-      </div>
+    <div id="mintSection" style="margin-top: 20px;">
+      <input type="text" id="cidInput" placeholder="Enter IPFS Metadata CID" value="bafybeifrff6yjyf7esz4rsfusasdjbxmckfm3a3ch7qvbm756usovunoze" />
+      <button id="mintBtn" onclick="mintNFT()">Mint REU NFT</button>
     </div>
 
-    <div id="walletDisplay" class="wallet-chip"></div>
-
-    <!-- Step 1: Connect Wallet Button -->
-    <button id="connectBtn" class="btn" onclick="connectWallet()">Connect MetaMask</button>
-
-    <!-- Step 2: Pinata CID Box & Mint Button -->
-    <div id="mintSection" style="display: none;">
-      <div class="input-group">
-        <label for="cidInput">Pinata IPFS CID</label>
-        <input 
-          type="text" 
-          id="cidInput" 
-          class="input-box" 
-          placeholder="Paste CID here (e.g. Qm... or bafy...)"
-        />
-      </div>
-
-      <button id="mintBtn" class="btn" onclick="mintNFT()">Mint REU NFT</button>
-    </div>
-
-    <div id="statusMsg" class="status-msg"></div>
+    <div id="status" class="status"></div>
   </div>
 
   <script>
-    const CONTRACT_ADDRESS = "0x3F624c103e523A475ddb15f4dF616F263F3407e5";
-    const SEPOLIA_CHAIN_ID = "0xaa36a7";
+    const CONTRACT_ADDRESS = "0xb8eF45d272D357Ff694dE43E5Fa1c5D763B72d7C";
+    const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111 in hex
 
+    // Comprehensive ABI supporting multiple minting method names
     const CONTRACT_ABI = [
-      "function requestNFT() public",
       "function requestNFT(string memory tokenURI) public",
+      "function requestNFT() public",
+      "function mint(string memory tokenURI) public",
+      "function mint() public",
       "function totalSupply() public view returns (uint256)"
     ];
 
-    let currentAccount = null;
+    let provider;
+    let signer;
+    let contract;
 
     async function connectWallet() {
-      const status = document.getElementById("statusMsg");
+      const status = document.getElementById("status");
+      status.className = "status";
+      status.innerText = "Connecting wallet...";
 
-      if (typeof window.ethereum === "undefined") {
-        alert("MetaMask extension not detected!");
+      if (!window.ethereum) {
+        status.className = "status error";
+        status.innerText = "MetaMask is not installed. Please install it to continue.";
         return;
       }
 
       try {
-        status.innerText = "Connecting to MetaMask...";
-        
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        currentAccount = accounts[0];
+        // Request account access
+        await window.ethereum.request({ method: "eth_requestAccounts" });
 
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        // Ensure user is on Sepolia network
+        const chainId = await window.ethereum.request({ method: "eth_chainId" });
         if (chainId !== SEPOLIA_CHAIN_ID) {
-          status.innerText = "Switching network to Sepolia...";
-          await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: SEPOLIA_CHAIN_ID }],
-          });
+          try {
+            await window.ethereum.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: SEPOLIA_CHAIN_ID }],
+            });
+          } catch (switchError) {
+            status.className = "status error";
+            status.innerText = "Please switch your MetaMask network to Sepolia Testnet.";
+            return;
+          }
         }
 
-        document.getElementById("walletDisplay").innerText = `Connected: ${currentAccount.substring(0,6)}...${currentAccount.substring(currentAccount.length-4)}`;
-        document.getElementById("walletDisplay").style.display = "block";
-        document.getElementById("connectBtn").style.display = "none";
-        document.getElementById("mintSection").style.display = "block";
-        status.innerText = "";
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-        await loadTotalSupply();
+        const userAddress = await signer.getAddress();
+        document.getElementById("connectBtn").innerText = "Connected";
+        document.getElementById("connectBtn").disabled = true;
+        document.getElementById("walletAddress").innerText = `Wallet: ${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
+
+        status.innerText = "";
+        await updateSupply();
       } catch (err) {
         console.error(err);
-        status.innerText = "Wallet connection failed or rejected.";
+        status.className = "status error";
+        status.innerText = err.message || "Failed to connect wallet.";
       }
     }
 
-    async function loadTotalSupply() {
+    async function updateSupply() {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-        const supply = await contract.totalSupply();
-        document.getElementById("totalSupply").innerText = `${supply.toString()} / 10`;
+        if (contract) {
+          const supply = await contract.totalSupply();
+          document.getElementById("supplyText").innerText = `Total Minted: ${supply.toString()}`;
+        }
       } catch (err) {
-        console.error("Error fetching supply:", err);
+        console.warn("Could not fetch totalSupply from contract:", err);
       }
     }
 
     async function mintNFT() {
-      const cidInput = document.getElementById("cidInput").value.trim();
+      const status = document.getElementById("status");
       const mintBtn = document.getElementById("mintBtn");
-      const status = document.getElementById("statusMsg");
+      status.className = "status";
+
+      if (!signer || !contract) {
+        status.className = "status error";
+        status.innerText = "Please connect your wallet first.";
+        return;
+      }
+
+      let cid = document.getElementById("cidInput").value.trim();
+      if (!cid) {
+        status.className = "status error";
+        status.innerText = "Please enter a valid IPFS CID.";
+        return;
+      }
+
+      // Format CID into full IPFS protocol URI if necessary
+      let formattedURI = cid.startsWith("ipfs://") ? cid : `ipfs://${cid}`;
 
       try {
         mintBtn.disabled = true;
-        mintBtn.innerText = "Minting...";
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        status.innerText = "Initiating transaction in MetaMask...";
 
         let tx;
-        if (cidInput) {
-          const formattedURI = cidInput.startsWith("ipfs://") ? cidInput : `ipfs://${cidInput}`;
-          status.innerText = "Confirm transaction in MetaMask...";
+        
+        // Attempt 1: Call requestNFT(tokenURI)
+        try {
+          tx = await contract.requestNFT(formattedURI);
+        } catch (e1) {
+          console.warn("requestNFT(string) failed, trying requestNFT() without parameters...", e1);
+          // Attempt 2: Fallback to requestNFT() without arguments
           try {
-            tx = await contract["requestNFT(string)"](formattedURI);
-          } catch (err) {
             tx = await contract.requestNFT();
+          } catch (e2) {
+            console.warn("requestNFT() failed, trying mint(string)...", e2);
+            // Attempt 3: Fallback to mint(string)
+            tx = await contract.mint(formattedURI);
           }
-        } else {
-          status.innerText = "Confirm transaction in MetaMask...";
-          tx = await contract.requestNFT();
         }
 
-        status.innerText = `Submitted! Hash: ${tx.hash.substring(0, 10)}... Waiting for confirmation.`;
+        status.innerText = `Transaction submitted! Waiting for block confirmation...\nHash: ${tx.hash.substring(0, 10)}...`;
+
+        // Wait for mining on Sepolia blockchain
         await tx.wait();
-        status.innerText = "🎉 REU Alien NFT Minted Successfully!";
-        
-        document.getElementById("cidInput").value = "";
-        await loadTotalSupply();
+
+        status.className = "status success";
+        status.innerText = "🎉 NFT successfully minted on Sepolia!";
+        await updateSupply();
+
       } catch (err) {
-        console.error(err);
-        status.innerText = "Transaction failed or canceled.";
+        console.error("Mint error:", err);
+        status.className = "status error";
+        status.innerText = err.reason || err.message || "Minting transaction failed or was rejected.";
       } finally {
         mintBtn.disabled = false;
-        mintBtn.innerText = "Mint REU NFT";
       }
     }
-
-    window.addEventListener('load', async () => {
-      if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
-        currentAccount = window.ethereum.selectedAddress;
-        document.getElementById("walletDisplay").innerText = `Connected: ${currentAccount.substring(0,6)}...${currentAccount.substring(currentAccount.length-4)}`;
-        document.getElementById("walletDisplay").style.display = "block";
-        document.getElementById("connectBtn").style.display = "none";
-        document.getElementById("mintSection").style.display = "block";
-        await loadTotalSupply();
-      }
-    });
   </script>
+
 </body>
 </html>
