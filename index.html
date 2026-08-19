@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REU Alien NFT Collection</title>
-  <!-- Load Ethers.js v5 -->
+  <title>messigoat10's HKUST CDGT T001 NFT Collection</title>
+  <!-- Ethers.js v5 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
   <style>
     body {
@@ -28,7 +28,7 @@
       text-align: center;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
-    h1 { margin-top: 0; font-size: 1.8rem; }
+    h1 { margin-top: 0; font-size: 1.6rem; }
     p { color: #cbd5e1; font-size: 0.95rem; }
     input {
       width: 90%;
@@ -38,7 +38,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       background: rgba(0, 0, 0, 0.3);
       color: #fff;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
     button {
       width: 95%;
@@ -63,7 +63,7 @@
 
   <div class="card">
     <h1>REU Alien NFT Mint</h1>
-    <p>Mint your REU Alien NFT directly on Sepolia testnet.</p>
+    <p>messigoat10’s HKUST CDGT T001 Collection</p>
     
     <div>
       <p id="supplyText">Total Minted: --</p>
@@ -82,14 +82,12 @@
 
   <script>
     const CONTRACT_ADDRESS = "0xb8eF45d272D357Ff694dE43E5Fa1c5D763B72d7C";
-    const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111 in hex
+    const SEPOLIA_CHAIN_ID = "0xaa36a7"; // Sepolia Chain ID in Hex
 
-    // Comprehensive ABI supporting multiple minting method names
+    // Correct ABI targeting requestNFT
     const CONTRACT_ABI = [
       "function requestNFT(string memory tokenURI) public",
       "function requestNFT() public",
-      "function mint(string memory tokenURI) public",
-      "function mint() public",
       "function totalSupply() public view returns (uint256)"
     ];
 
@@ -109,10 +107,10 @@
       }
 
       try {
-        // Request account access
+        // Request wallet accounts
         await window.ethereum.request({ method: "eth_requestAccounts" });
 
-        // Ensure user is on Sepolia network
+        // Switch network to Sepolia if needed
         const chainId = await window.ethereum.request({ method: "eth_chainId" });
         if (chainId !== SEPOLIA_CHAIN_ID) {
           try {
@@ -122,7 +120,7 @@
             });
           } catch (switchError) {
             status.className = "status error";
-            status.innerText = "Please switch your MetaMask network to Sepolia Testnet.";
+            status.innerText = "Please switch your network to Sepolia Testnet in MetaMask.";
             return;
           }
         }
@@ -139,7 +137,7 @@
         status.innerText = "";
         await updateSupply();
       } catch (err) {
-        console.error(err);
+        console.error("Wallet connection error:", err);
         status.className = "status error";
         status.innerText = err.message || "Failed to connect wallet.";
       }
@@ -152,7 +150,7 @@
           document.getElementById("supplyText").innerText = `Total Minted: ${supply.toString()}`;
         }
       } catch (err) {
-        console.warn("Could not fetch totalSupply from contract:", err);
+        console.warn("Could not read totalSupply:", err);
       }
     }
 
@@ -170,47 +168,41 @@
       let cid = document.getElementById("cidInput").value.trim();
       if (!cid) {
         status.className = "status error";
-        status.innerText = "Please enter a valid IPFS CID.";
+        status.innerText = "Please enter an IPFS CID.";
         return;
       }
 
-      // Format CID into full IPFS protocol URI if necessary
+      // Format CID string to full protocol URI
       let formattedURI = cid.startsWith("ipfs://") ? cid : `ipfs://${cid}`;
 
       try {
         mintBtn.disabled = true;
-        status.innerText = "Initiating transaction in MetaMask...";
+        status.innerText = "Please confirm the transaction in MetaMask...";
 
         let tx;
         
-        // Attempt 1: Call requestNFT(tokenURI)
+        // Primary Attempt: requestNFT(string)
         try {
-          tx = await contract.requestNFT(formattedURI);
+          tx = await contract["requestNFT(string)"](formattedURI);
         } catch (e1) {
-          console.warn("requestNFT(string) failed, trying requestNFT() without parameters...", e1);
-          // Attempt 2: Fallback to requestNFT() without arguments
-          try {
-            tx = await contract.requestNFT();
-          } catch (e2) {
-            console.warn("requestNFT() failed, trying mint(string)...", e2);
-            // Attempt 3: Fallback to mint(string)
-            tx = await contract.mint(formattedURI);
-          }
+          console.warn("requestNFT(string) failed, falling back to requestNFT()...", e1);
+          // Fallback Attempt: requestNFT() with no parameters
+          tx = await contract["requestNFT()"]();
         }
 
-        status.innerText = `Transaction submitted! Waiting for block confirmation...\nHash: ${tx.hash.substring(0, 10)}...`;
+        status.innerText = `Transaction submitted! Waiting for block confirmation...\nTx: ${tx.hash.substring(0, 10)}...`;
 
-        // Wait for mining on Sepolia blockchain
+        // Wait for mining on Sepolia
         await tx.wait();
 
         status.className = "status success";
-        status.innerText = "🎉 NFT successfully minted on Sepolia!";
+        status.innerText = "🎉 NFT Successfully Minted on Sepolia!";
         await updateSupply();
 
       } catch (err) {
-        console.error("Mint error:", err);
+        console.error("Minting Error:", err);
         status.className = "status error";
-        status.innerText = err.reason || err.message || "Minting transaction failed or was rejected.";
+        status.innerText = err.reason || err.message || "Minting transaction failed or rejected.";
       } finally {
         mintBtn.disabled = false;
       }
